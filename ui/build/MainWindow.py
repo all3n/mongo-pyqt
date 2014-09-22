@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'MainWindow.ui'
+#
+# Created: Sun Sep 21 14:38:00 2014
+#      by: PyQt5 UI code generator 5.2.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(925, 852)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setEnabled(True)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
+        self.centralwidget.setSizePolicy(sizePolicy)
+        self.centralwidget.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.centralwidget.setAutoFillBackground(False)
+        self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.verticalLayout_main = QtWidgets.QVBoxLayout()
+        self.verticalLayout_main.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        self.verticalLayout_main.setObjectName("verticalLayout_main")
+        self.horizontall_up = QtWidgets.QHBoxLayout()
+        self.horizontall_up.setObjectName("horizontall_up")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setObjectName("label")
+        self.horizontall_up.addWidget(self.label)
+        self.mongoHost = QtWidgets.QLineEdit(self.centralwidget)
+        self.mongoHost.setObjectName("mongoHost")
+        self.horizontall_up.addWidget(self.mongoHost)
+        self.connectBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.connectBtn.setObjectName("connectBtn")
+        self.horizontall_up.addWidget(self.connectBtn)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontall_up.addItem(spacerItem)
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setObjectName("label_2")
+        self.horizontall_up.addWidget(self.label_2)
+        self.comboDbs = QtWidgets.QComboBox(self.centralwidget)
+        self.comboDbs.setObjectName("comboDbs")
+        self.horizontall_up.addWidget(self.comboDbs)
+        self.verticalLayout_main.addLayout(self.horizontall_up)
+        self.horizontal_down = QtWidgets.QHBoxLayout()
+        self.horizontal_down.setObjectName("horizontal_down")
+        self.collectionList = QtWidgets.QListView(self.centralwidget)
+        self.collectionList.setMaximumSize(QtCore.QSize(180, 16777215))
+        self.collectionList.setObjectName("collectionList")
+        self.horizontal_down.addWidget(self.collectionList)
+        self.verticall_down_right = QtWidgets.QVBoxLayout()
+        self.verticall_down_right.setObjectName("verticall_down_right")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.query = QtWidgets.QLineEdit(self.centralwidget)
+        self.query.setObjectName("query")
+        self.horizontalLayout_2.addWidget(self.query)
+        self.querybtn = QtWidgets.QPushButton(self.centralwidget)
+        self.querybtn.setObjectName("querybtn")
+        self.horizontalLayout_2.addWidget(self.querybtn)
+        self.verticall_down_right.addLayout(self.horizontalLayout_2)
+        self.preview = QtWidgets.QLabel(self.centralwidget)
+        self.preview.setObjectName("preview")
+        self.verticall_down_right.addWidget(self.preview)
+        self.tableview = QtWidgets.QTableView(self.centralwidget)
+        self.tableview.setObjectName("tableview")
+        self.verticall_down_right.addWidget(self.tableview)
+        self.horizontal_down.addLayout(self.verticall_down_right)
+        self.verticalLayout_main.addLayout(self.horizontal_down)
+        self.verticalLayout_5.addLayout(self.verticalLayout_main)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 925, 22))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "mongo host:"))
+        self.connectBtn.setText(_translate("MainWindow", "connect"))
+        self.label_2.setText(_translate("MainWindow", "dbs:"))
+        self.querybtn.setText(_translate("MainWindow", "query"))
+        self.preview.setText(_translate("MainWindow", "Preview:"))
+
