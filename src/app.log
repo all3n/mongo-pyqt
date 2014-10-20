@@ -767,3 +767,7 @@
 [2014-09-22 02:13:45,014](INFO)Application : app is start
 [2014-09-22 02:13:50,402](INFO)AppController : [u'mba', u'mbaproduct', u'test', u'config', u'admin']
 [2014-09-22 02:15:48,778](INFO)Application : app is start
+[2014-09-22 14:46:07,175](INFO)Application : app is start
+[2014-09-22 14:46:09,734](INFO)AppController : [u'mba', u'mbaproduct', u'test', u'config', u'admin']
+[2014-09-22 14:46:25,472](INFO)Application : app is start
+[2014-09-22 14:46:28,321](INFO)AppController : [u'mba', u'mbaproduct', u'test', u'config', u'admin']

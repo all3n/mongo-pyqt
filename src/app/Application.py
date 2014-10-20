@@ -7,10 +7,10 @@ Created on 2014年9月20日
 '''
 import logging.config
 
-from PyQt5.Qt import QApplication, QStandardItem, QMainWindow, QTableView
+from PyQt5.Qt import QApplication, QMainWindow
 import sys
 from model.MongoResultModel import MongoResultModel
-from PyQt5 import Qt, QtCore
+from PyQt5 import  QtCore
 from controller.AppController import AppController
 from view.MainWindow import Ui_MainWindow
 
@@ -62,7 +62,6 @@ class Application(object):
         self.setupCtl()
         self.setupSlot()
         
-        self.ui_MainWindow.mongoHost.setText("10.19.0.240")
         
         sys.exit(self.qtapp.exec_())
         

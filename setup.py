@@ -9,6 +9,7 @@ from setuptools import setup
 
 APP = ['src/Main.py']
 DATA_FILES = ['src/logging.conf',
+			'Icon.icns',
 			('',['src/app']),
 			('',['src/controller']),
 			('',['src/model']),
@@ -16,6 +17,12 @@ DATA_FILES = ['src/logging.conf',
 		]
 OPTIONS = {
 	'argv_emulation': True,
+	'site_packages':True,
+#	'no_strip':True,
+	'iconfile':'Icon.icns',
+#	'semi_standalone':False,
+#	'includes':['sip','PyQt5','PyQt5.Qt','PyQt5.QtCore','PyQt5.QtGui','simplejson','pymongo','PyQt5.QtWidgets'],
+#	'excludes':['PyQt5.QtDesigner', 'PyQt5.QtNetwork', 'PyQt5.QtOpenGL', 'PyQt5.QtScript', 'PyQt5.QtSql', 'PyQt5.QtTest', 'PyQt5.QtWebKit', 'PyQt5.QtXml', 'PyQt5.phonon']
 }
 
 setup(

@@ -8,8 +8,7 @@ Created on 2014年9月20日
 '''
 import sys
 import logging
-from PyQt5.Qt import QStandardItem, QPushButton, QComboBox, QTableView,\
-    QModelIndex, QTreeWidgetItem, QMenu, QAction
+from PyQt5.Qt import QStandardItem,QTreeWidgetItem, QMenu, QAction
 import pymongo
 from utils.MongoUtils import MongoUtils
 import json
@@ -18,7 +17,6 @@ from PyQt5 import QtGui
 import math
 import time
 import re
-
 
 '''
 @property  mainWindow:MainWindow

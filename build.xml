@@ -9,7 +9,7 @@
 	<property name="APP_NAME" value="Mongo-pyqt" />
 	<property name="PLUGIN_DIR" value="${dist}/${APP_NAME}.app/Contents/Resources/qt_plugins" />
 	<property name="QT_CONF" value="${dist}/${APP_NAME}.app/Contents/Resources/qt.conf" />
-
+	<property name="QT_FRAMEWORK" value="${dist}/${APP_NAME}.app/Contents/Frameworks" />
 
 	<target name="clean">
 		<exec executable="rm" >
@@ -35,13 +35,18 @@
 	</target>
 
 
-	<target name="build" depends="macdeployqt">
+	<target name="build" depends="macdeployqt,rmdebug">
 
 	
 	</target>
 	<target name="run">
 		<exec executable="dist/${APP_NAME}.app/Contents/MacOS/${APP_NAME}" />
 	</target>
+
+	<target name="rmdebug">
+		<exec executable="./rmdebug" />
+	</target>
+
 
 	<target name="fixdylib">
 		<mkdir dir="${PLUGIN_DIR}"/>
