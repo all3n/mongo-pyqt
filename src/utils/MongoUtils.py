@@ -16,12 +16,18 @@ class MongoUtils(object):
         '''
         Constructor
         '''
-    def preview(self,col,queryjson,page,limit):
+    def preview(self,col,queryjson,page,limit,sort):
         skipNum = (page - 1) * limit
-        
-        query = json.dumps(queryjson)
-        
-        return "db."+col+".find("+query+").limit("+str(limit)+").skip("+str(skipNum)+")"
+        if len(queryjson.items()) > 0:
+            query = json.dumps(queryjson)
+        else:
+            query = ""
+            
+        if sort == None:
+            return "db."+col+".find("+query+").limit("+str(limit)+").skip("+str(skipNum)+")"
+        else:
+            sortStr = json.dumps(sort)
+            return "db."+col+".find("+query+").sort("+sortStr+").limit("+str(limit)+").skip("+str(skipNum)+")"
        
             
             

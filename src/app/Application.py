@@ -7,7 +7,7 @@ Created on 2014年9月20日
 '''
 import logging.config
 
-from PyQt5.Qt import QApplication, QMainWindow
+from PyQt5.Qt import QApplication, QMainWindow, Qt, QAction
 import sys
 from model.MongoResultModel import MongoResultModel
 from PyQt5 import  QtCore
@@ -39,7 +39,16 @@ class Application(object):
         self.ui_MainWindow.tableview.setModel(self.mongoResultModel)
         self.ui_MainWindow.connectBtn.clicked.connect(self.appctl.connectServer)
         self.ui_MainWindow.querybtn.clicked.connect(self.appctl.query)
+        
         self.ui_MainWindow.tableview.clicked.connect(self.appctl.clickTable)
+        self.add_query_action = QAction("add to query",self.ui_MainWindow.tableview)
+        self.add_query_action.triggered.connect(self.appctl.addToQuery)
+        self.ui_MainWindow.tableview.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.ui_MainWindow.tableview.addAction(self.add_query_action)
+        self.tableHeader = self.ui_MainWindow.tableview.horizontalHeader()
+        self.tableHeader.setSortIndicatorShown(True)
+        self.tableHeader.sortIndicatorChanged.connect(self.appctl.columnSort)
+        
         self.ui_MainWindow.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui_MainWindow.treeWidget.customContextMenuRequested.connect(self.appctl.showTreeMenu)
         

@@ -8,7 +8,8 @@ Created on 2014年9月20日
 '''
 import sys
 import logging
-from PyQt5.Qt import QStandardItem,QTreeWidgetItem, QMenu, QAction
+from PyQt5.Qt import QStandardItem,QTreeWidgetItem, QMenu, QAction, Qt,\
+    QMessageBox
 import pymongo
 from utils.MongoUtils import MongoUtils
 import json
@@ -17,24 +18,24 @@ from PyQt5 import QtGui
 import math
 import time
 import re
+import thread
 
 '''
-@property  mainWindow:MainWindow
+@property  mainWindow:QMainWindow
+@property  ui:MainWindow
 '''
 class AppController(object):
     '''
     classdocs
     '''
-
-
-    
     
     
     def onContextMenu(self):
-        print self.curDb+"."+self.curCol
+        self.log.info(self.curDb+"."+self.curCol)
         self.page = 1
         self.queryjson = {}
-        self.findRecord(self.curDb,self.curCol,self.queryjson,self.page,self.limit)
+        thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))
+#         self.findRecord(self.curDb,self.curCol,self.queryjson,self.page,self.limit)
     
     
     def __init__(self,app):
@@ -44,22 +45,36 @@ class AppController(object):
         self.app = app
         self.setModel(self.app.mongoResultModel)
         self.setView(self.app.ui_MainWindow)
+        self.mainWindow = self.app.mainWindow
         self.mgutils = MongoUtils()
-        
+        self.sortCondition = None
         self.log = logging.getLogger("AppController")
         
         self.limit = 20
         
-        self.ctxAction = QAction("Find",self.mainWindow.treeWidget)
+        self.ctxAction = QAction("Find",self.ui.treeWidget)
         self.ctxAction.triggered.connect(self.onContextMenu)
         
     def connectServer(self):
-#         self.mongoResultModel.setColumnCount(3)
-#         self.mongoResultModel.setRowCount(5)
-#         self.mongoResultModel.setItem(1, 1, QStandardItem("afsdf"))
-        host = self.mainWindow.mongoHost.text()
+        thread.start_new_thread(self._connectServer,())
+    
+    def _connectServer(self):
+        host = self.ui.mongoHost.text()
+        
+        if host == "":
+            host = "localhost"
+
         try:
-            self.conn = pymongo.Connection(host,27017)
+            indexOfSep = host.index(":")
+            hostName,portStr = host.split(":")
+            port = int(portStr)
+        except ValueError,e:
+            hostName = host
+            port = 27017
+            print e
+        
+        try:
+            self.conn = pymongo.Connection(hostName,port)
             self.showMsg("connect "+host+" success!")
             self.databases = self.conn.database_names()
             
@@ -69,40 +84,39 @@ class AppController(object):
             for db in self.databases:
                 colsMap[db] = self.conn[db].collection_names()
                 
-            self.mainWindow.treeWidget.clear()
+            self.ui.treeWidget.clear()
             treeItems = []
             for db in self.databases:
-                dbItem = QTreeWidgetItem(self.mainWindow.treeWidget,[db])
+                dbItem = QTreeWidgetItem(self.ui.treeWidget,[db])
                 treeItems.append(dbItem)
                 cols = colsMap[db]
                 for col in cols:
                     colItem = QTreeWidgetItem(dbItem,[col])
                     
                 
-            self.mainWindow.treeWidget.insertTopLevelItems(0,treeItems)
-            
+            self.ui.treeWidget.insertTopLevelItems(0,treeItems)
+            self.log.info(self.databases)
             
         except Exception,e:
             self.log.error(e)
-            self.showMsg(e.message)
+            errorMsg = host+" connect failed:"+e.message
+            self.showMsg(errorMsg)
             traceback.print_exc(file=sys.stdout)
             
-        self.log.info(self.databases)
-        pass
+        
     
     
     def query(self):
         self.mongoResultModel.clear()
-        query = self.mainWindow.query.text()
+        query = self.ui.query.text()
         query = re.sub(r"(,?)(\w+?)\s*?:", r"\1'\2':", query).replace("'", "\"")
        
          
-        treeItem = self.mainWindow.treeWidget.currentItem()
+        treeItem = self.ui.treeWidget.currentItem()
         dbTreeItem = treeItem.parent()
         
         self.page = 1
         
-        print treeItem,dbTreeItem
         if dbTreeItem == None:
             self.showMsg("please select a collection")
             return
@@ -125,7 +139,8 @@ class AppController(object):
             
             
             self.queryjson = queryjson
-            self.findRecord(dbName,collName,queryjson,self.page,limit)
+#             self.findRecord(dbName,collName,queryjson,self.page,limit)
+            thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))
             
         except Exception,e:
             self.log.error(e)
@@ -136,10 +151,10 @@ class AppController(object):
     
     def findRecord(self, dbName, collName,queryjson,page,limit):
         
-        preview = self.mgutils.preview(collName,queryjson,page,limit)
-        self.mainWindow.preview.setText(preview)
+        preview = self.mgutils.preview(collName,queryjson,page,limit,self.sortCondition)
+        self.ui.preview.setText(preview)
         
-        self.mainWindow.prevBtn.setEnabled(page > 1)
+        self.ui.prevBtn.setEnabled(page > 1)
         
         
         
@@ -152,51 +167,31 @@ class AppController(object):
         skipnum = (page - 1) * limit
         
         self.start = time.time()
-        cursor = coll.find(queryjson).limit(limit).skip(skipnum)
-        
+        if self.sortCondition == None:
+            cursor = coll.find(queryjson).limit(limit).skip(skipnum)
+        else:
+            mgSort = []
+            for k,v in self.sortCondition.items():
+                mgSort.append((k,v))
+            
+            cursor = coll.find(queryjson).sort(mgSort).limit(limit).skip(skipnum)
         
         totalCounts = cursor.count()
         pages = int(math.ceil(totalCounts/float(limit)));
-        self.mainWindow.nextBtn.setEnabled(page < pages)
+        self.ui.nextBtn.setEnabled(page < pages)
         
-        self.mainWindow.paginationinfo.setText(str(self.page)+"/"+str(pages) + " total:"+str(totalCounts))
+        self.ui.paginationinfo.setText(str(self.page)+"/"+str(pages) + " total:"+str(totalCounts))
          
         self.fillTable(cursor)
     
     
     def fillTable(self,cursor):
-        i = 0
-        setheader = False
-        labels = None
-        for item in cursor:
-            j = 0
-            items = item.items()
-            
-            if setheader == False:
-                self.mongoResultModel.setColumnCount(len(items))
-                labels = item.keys()
-                labels.sort()
-                self.mongoResultModel.setHorizontalHeaderLabels(labels)
-                setheader = True
-            
-            
-            for (field,value) in items:
-                try:
-                    fieldindex = labels.index(field)
-                except ValueError:
-                    labels.append(field)
-                    fieldindex = len(labels) - 1
-                    self.mongoResultModel.setHorizontalHeaderLabels(labels)
-            
-                self.mongoResultModel.setItem(i, fieldindex, QStandardItem(str(value).encode("UTF-8")))
-                j += 1
-            i += 1
-          
+        self.mongoResultModel.fillModelByCursor(cursor)
         self.end = time.time()
-        self.mainWindow.querytime.setText("query use:"+str('%.4f' % (self.end-self.start))+" s") 
+        self.ui.querytime.setText("query use:"+str('%.4f' % (self.end-self.start))+" s") 
     
-    def setView(self,mainWindow):
-        self.mainWindow = mainWindow
+    def setView(self,ui_mainWindow):
+        self.ui = ui_mainWindow
         
         
     
@@ -204,15 +199,43 @@ class AppController(object):
         self.mongoResultModel = model
         
     def clickTable(self):
-        index = self.mainWindow.tableview.currentIndex()
+        index = self.ui.tableview.currentIndex()
 #         self.log.debug(str(index.row())+","+str(index.column())+" clicked")
         selectClickValue = self.mongoResultModel.data(index)
-        self.mainWindow.viewDetailLabel.setText(selectClickValue)
         
         
+        
+        
+        self.ui.viewDetailLabel.setText(selectClickValue)
+        
+        
+        
+    def addToQuery(self):
+        index = self.ui.tableview.currentIndex()
+        labels = self.mongoResultModel.getLabels()
+        columnName = labels[index.column()]
+        
+        
+        self.log.debug(self.mongoResultModel.getModelData(index.row(),columnName))
+        self.queryjson[columnName] = self.mongoResultModel.getModelData(index.row(),columnName)
+        self.log.debug(self.queryjson)
+        self.ui.query.setText(json.dumps(self.queryjson))
+        
+    def columnSort(self,index,order):
+        labels = self.mongoResultModel.getLabels()
+        columnName = labels[index]
+        if order == Qt.AscendingOrder:
+            mongoSort = 1
+        else:
+            mongoSort = -1
+        
+        
+        self.sortCondition = {columnName:mongoSort}
+        self.ui.sort.setText(json.dumps(self.sortCondition))
+         
         
     def showTreeMenu(self,point):
-        item = self.mainWindow.treeWidget.itemAt(point)
+        item = self.ui.treeWidget.itemAt(point)
         if item != None and item.parent() != None:
             self.curDb = item.parent().text(0)
             self.curCol = item.text(0)
@@ -223,7 +246,7 @@ class AppController(object):
         
         
     def showMsg(self,msg):
-        self.app.mainWindow.statusBar().showMessage(msg)
+        self.mainWindow.statusBar().showMessage(msg)
         
         
     def prevPagination(self):
@@ -235,4 +258,5 @@ class AppController(object):
         self.pagination()
     
     def pagination(self):
-        self.findRecord(self.curDb, self.curCol, self.queryjson, self.page, self.limit)
+#         self.findRecord(self.curDb, self.curCol, self.queryjson, self.page, self.limit)
+        thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))

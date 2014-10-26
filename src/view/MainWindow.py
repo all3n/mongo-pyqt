@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sun Sep 21 21:16:45 2014
+# Created: Sat Oct 25 13:40:24 2014
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,10 +45,15 @@ class Ui_MainWindow(object):
         self.verticalLayout_main.addLayout(self.horizontall_up)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.preview = QtWidgets.QLabel(self.centralwidget)
+        self.preview1 = QtWidgets.QLabel(self.centralwidget)
+        self.preview1.setObjectName("preview1")
+        self.horizontalLayout.addWidget(self.preview1)
+        self.preview = QtWidgets.QLineEdit(self.centralwidget)
+        self.preview.setReadOnly(True)
         self.preview.setObjectName("preview")
         self.horizontalLayout.addWidget(self.preview)
         self.querytime = QtWidgets.QLabel(self.centralwidget)
+        self.querytime.setMinimumSize(QtCore.QSize(200, 0))
         self.querytime.setText("")
         self.querytime.setObjectName("querytime")
         self.horizontalLayout.addWidget(self.querytime)
@@ -66,8 +71,26 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.query = QtWidgets.QLineEdit(self.centralwidget)
+        self.query.setInputMethodHints(QtCore.Qt.ImhHiddenText)
+        self.query.setText("")
+        self.query.setClearButtonEnabled(True)
         self.query.setObjectName("query")
         self.horizontalLayout_2.addWidget(self.query)
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.sort = QtWidgets.QLineEdit(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.sort.sizePolicy().hasHeightForWidth())
+        self.sort.setSizePolicy(sizePolicy)
+        self.sort.setMinimumSize(QtCore.QSize(100, 0))
+        self.sort.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.sort.setText("")
+        self.sort.setClearButtonEnabled(False)
+        self.sort.setObjectName("sort")
+        self.horizontalLayout_2.addWidget(self.sort)
         self.querybtn = QtWidgets.QPushButton(self.centralwidget)
         self.querybtn.setObjectName("querybtn")
         self.horizontalLayout_2.addWidget(self.querybtn)
@@ -118,11 +141,14 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Mongo-pyqt"))
         self.label.setText(_translate("MainWindow", "mongo host:"))
         self.connectBtn.setText(_translate("MainWindow", "connect"))
-        self.preview.setText(_translate("MainWindow", "Preview"))
+        self.preview1.setText(_translate("MainWindow", "Preview"))
         self.treeWidget.headerItem().setText(0, _translate("MainWindow", "DB"))
+        self.query.setPlaceholderText(_translate("MainWindow", "{}"))
+        self.label_2.setText(_translate("MainWindow", "sort"))
+        self.sort.setPlaceholderText(_translate("MainWindow", "{\"field\":1}"))
         self.querybtn.setText(_translate("MainWindow", "query"))
         self.viewDetailLabel.setText(_translate("MainWindow", "Table Detail:"))
         self.prevBtn.setText(_translate("MainWindow", "Prev"))
