@@ -38,10 +38,14 @@ class Application(object):
     def setupSlot(self):
         self.ui_MainWindow.tableview.setModel(self.mongoResultModel)
         self.ui_MainWindow.connectBtn.clicked.connect(self.appctl.connectServer)
+        
         self.ui_MainWindow.querybtn.clicked.connect(self.appctl.query)
+        self.ui_MainWindow.query.returnPressed.connect(self.appctl.query)
+        self.ui_MainWindow.query.textChanged.connect(self.appctl.queryChange)
         
         self.ui_MainWindow.tableview.clicked.connect(self.appctl.clickTable)
         self.add_query_action = QAction("add to query",self.ui_MainWindow.tableview)
+        
         self.add_query_action.triggered.connect(self.appctl.addToQuery)
         self.ui_MainWindow.tableview.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.ui_MainWindow.tableview.addAction(self.add_query_action)

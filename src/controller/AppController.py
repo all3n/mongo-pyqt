@@ -59,6 +59,7 @@ class AppController(object):
         thread.start_new_thread(self._connectServer,())
     
     def _connectServer(self):
+        self.ui.connectBtn.setEnabled(False)
         host = self.ui.mongoHost.text()
         
         if host == "":
@@ -103,7 +104,7 @@ class AppController(object):
             self.showMsg(errorMsg)
             traceback.print_exc(file=sys.stdout)
             
-        
+        self.ui.connectBtn.setEnabled(True)
     
     
     def query(self):
@@ -150,7 +151,7 @@ class AppController(object):
     
     
     def findRecord(self, dbName, collName,queryjson,page,limit):
-        
+        self.ui.querybtn.setEnabled(False)
         preview = self.mgutils.preview(collName,queryjson,page,limit,self.sortCondition)
         self.ui.preview.setText(preview)
         
@@ -183,6 +184,7 @@ class AppController(object):
         self.ui.paginationinfo.setText(str(self.page)+"/"+str(pages) + " total:"+str(totalCounts))
          
         self.fillTable(cursor)
+        self.ui.querybtn.setEnabled(True)
     
     
     def fillTable(self,cursor):
@@ -260,3 +262,8 @@ class AppController(object):
     def pagination(self):
 #         self.findRecord(self.curDb, self.curCol, self.queryjson, self.page, self.limit)
         thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))
+        
+    def queryChange(self,text):
+        if text == "":
+            self.queryjson={}
+            
