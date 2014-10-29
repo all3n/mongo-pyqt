@@ -18,8 +18,10 @@ from PyQt5 import QtGui
 import math
 import time
 import re
-import thread
-
+if sys.version>'3':
+    import _thread as thread
+else:
+    import thread
 '''
 @property  mainWindow:QMainWindow
 @property  ui:MainWindow
@@ -34,6 +36,7 @@ class AppController(object):
         self.log.info(self.curDb+"."+self.curCol)
         self.page = 1
         self.queryjson = {}
+        
         thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))
 #         self.findRecord(self.curDb,self.curCol,self.queryjson,self.page,self.limit)
     
@@ -69,10 +72,9 @@ class AppController(object):
             indexOfSep = host.index(":")
             hostName,portStr = host.split(":")
             port = int(portStr)
-        except ValueError,e:
+        except ValueError as e:
             hostName = host
             port = 27017
-            print e
         
         try:
             self.conn = pymongo.Connection(hostName,port)
@@ -98,7 +100,7 @@ class AppController(object):
             self.ui.treeWidget.insertTopLevelItems(0,treeItems)
             self.log.info(self.databases)
             
-        except Exception,e:
+        except Exception as e:
             self.log.error(e)
             errorMsg = host+" connect failed:"+e.message
             self.showMsg(errorMsg)
@@ -143,7 +145,7 @@ class AppController(object):
 #             self.findRecord(dbName,collName,queryjson,self.page,limit)
             thread.start_new_thread(self.findRecord,(self.curDb,self.curCol,self.queryjson,self.page,self.limit))
             
-        except Exception,e:
+        except Exception as e:
             self.log.error(e)
             self.showMsg(e.message)
             traceback.print_exc(file=sys.stdout)

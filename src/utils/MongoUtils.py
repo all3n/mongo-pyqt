@@ -35,7 +35,6 @@ class MongoUtils(object):
         pattern = re.compile(r'db\.([\.a-zA-Z0-9]+)\.find\(({.*})\)')
         match = pattern.match(mongostmt.replace("'", "\""))
         if match:
-            print match.groups()
             jsonstr = match.group(2)
             return (match.group(1),json.loads(jsonstr))
         return None

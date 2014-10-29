@@ -6,7 +6,7 @@ Created on 2014年9月20日
 @author: wanghch
 '''
 from PyQt5.Qt import QStandardItemModel, QStandardItem
-
+import sys
 
 class MongoResultModel(QStandardItemModel):
     '''
@@ -32,7 +32,11 @@ class MongoResultModel(QStandardItemModel):
             if setheader == False:
                 self.setColumnCount(len(items))
                 self.labels = item.keys()
-                self.labels.sort()
+                if sys.version > '3':
+                    self.labels = sorted(self.labels)
+                else:
+                    self.labels.sort()
+                
                 self.setHorizontalHeaderLabels(self.labels)
                 setheader = True
                 
@@ -45,8 +49,9 @@ class MongoResultModel(QStandardItemModel):
                     self.labels.append(field)
                     fieldindex = len(self.labels) - 1
                     self.setHorizontalHeaderLabels(self.labels)
-            
-                self.setItem(i, fieldindex, QStandardItem(str(value).encode("UTF-8")))
+                
+                valueBytes = str(value).encode("utf_8")
+                self.setItem(i, fieldindex, QStandardItem(valueBytes.decode(encoding='utf_8')))
                 j += 1
             i += 1
         
