@@ -56,4 +56,13 @@
 		<copy file="${QT_HOME_PLUGIN}/printsupport/libcocoaprintersupport.dylib" tofile="${PLUGIN_DIR}/printsupport/libcocoaprintersupport.dylib" />
 	</target>
 
+	<target name="linux"  depends="clean">
+		<exec executable="pyinstaller" >
+			<arg value="-F" />
+			<arg value="-nmongo-pyqt" />
+			<arg value="src/Main.py" />
+		</exec>
+	</target>
+
+
 </project>

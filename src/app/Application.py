@@ -25,7 +25,7 @@ class Application(object):
         '''
         Constructor
         '''
-        logging.config.fileConfig("logging.conf")
+       # logging.config.fileConfig("logging.conf")
         self.log = logging.getLogger("Application")
         
         
